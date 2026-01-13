@@ -1,5 +1,5 @@
 --[[
-    Government Helper 25.4
+    Government Helper 25.5
     Биндер для Правительства Arizona RP
     
     Управление:
@@ -11,7 +11,7 @@
 
 script_name("Government Helper")
 script_author("Chester Williams")
-script_version("25.4")
+script_version("25.5")
 
 -- Библиотеки
 local imgui = require 'mimgui'
@@ -41,7 +41,7 @@ local str = ffi.string
 local sizeof = ffi.sizeof
 
 -- Добавлены переменные для авто-обновления
-local SCRIPT_VERSION = "25.4"
+local SCRIPT_VERSION = "25.5"
 local UPDATE_URL = "https://raw.githubusercontent.com/Nikita2888/Gowerment-Helper/refs/heads/main/government_binder.lua" -- Замени на свой URL
 local VERSION_URL = "https://raw.githubusercontent.com/Nikita2888/Gowerment-Helper/refs/heads/main/version.txt" -- Замени на свой URL
 local SCRIPT_PATH = thisScript().path
@@ -1657,11 +1657,11 @@ local mainFrame = imgui.OnFrame(
             imgui.PushStyleColor(imgui.Col.ChildBg, colors.sidebarItem)
             imgui.BeginChild("##about_panel", imgui.ImVec2(-30, 200), false)
             imgui.SetCursorPos(imgui.ImVec2(15, 15))
-            imgui.TextColored(colors.gold, "Government Helper v25.1")
+            imgui.TextColored(colors.gold, "Government Helper v25.5")
             imgui.SetCursorPos(imgui.ImVec2(15, 40))
             imgui.Text("Биндер для Правительства Arizona RP")
             imgui.SetCursorPos(imgui.ImVec2(15, 65))
-            imgui.TextColored(colors.textDark, "Автор: v0")
+            imgui.TextColored(colors.textDark, "Автор: Chester Williams")
             imgui.SetCursorPos(imgui.ImVec2(15, 90))
             imgui.Text("Возможности:")
             imgui.SetCursorPos(imgui.ImVec2(15, 110))
