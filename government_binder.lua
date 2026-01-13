@@ -1,5 +1,5 @@
 --[[
-    Government Helper 25.5
+    Government Helper v25.1
     Биндер для Правительства Arizona RP
     
     Управление:
@@ -10,8 +10,8 @@
 ]]
 
 script_name("Government Helper")
-script_author("Chester Williams")
-script_version("25.5")
+script_author("v0")
+script_version("25.1")
 
 -- Библиотеки
 local imgui = require 'mimgui'
@@ -40,11 +40,13 @@ local new = imgui.new
 local str = ffi.string
 local sizeof = ffi.sizeof
 
--- Добавлены переменные для авто-обновления
-local SCRIPT_VERSION = "25.5"
-local UPDATE_URL = "https://raw.githubusercontent.com/Nikita2888/Gowerment-Helper/refs/heads/main/government_binder.lua" -- Замени на свой URL
-local VERSION_URL = "https://raw.githubusercontent.com/Nikita2888/Gowerment-Helper/refs/heads/main/version.txt" -- Замени на свой URL
+-- Замени YOUR_GITHUB_USERNAME на свой никнейм GitHub
+local SCRIPT_VERSION = "25.1"
+local UPDATE_URL = "https://raw.githubusercontent.com/Nikita2888/Gowerment-Helper/refs/heads/main/government_binder.lua"
+local VERSION_URL = "https://raw.githubusercontent.com/Nikita2888/Gowerment-Helper/refs/heads/main/version.txt"
 local SCRIPT_PATH = thisScript().path
+
+-- Добавлены переменные для авто-обновления
 local updateAvailable = false
 local latestVersion = ""
 
@@ -1657,11 +1659,11 @@ local mainFrame = imgui.OnFrame(
             imgui.PushStyleColor(imgui.Col.ChildBg, colors.sidebarItem)
             imgui.BeginChild("##about_panel", imgui.ImVec2(-30, 200), false)
             imgui.SetCursorPos(imgui.ImVec2(15, 15))
-            imgui.TextColored(colors.gold, "Government Helper v25.5")
+            imgui.TextColored(colors.gold, "Government Helper v25.1")
             imgui.SetCursorPos(imgui.ImVec2(15, 40))
             imgui.Text("Биндер для Правительства Arizona RP")
             imgui.SetCursorPos(imgui.ImVec2(15, 65))
-            imgui.TextColored(colors.textDark, "Автор: Chester Williams")
+            imgui.TextColored(colors.textDark, "Автор: v0")
             imgui.SetCursorPos(imgui.ImVec2(15, 90))
             imgui.Text("Возможности:")
             imgui.SetCursorPos(imgui.ImVec2(15, 110))
@@ -1745,16 +1747,35 @@ local quickFrame = imgui.OnFrame(
 -- Функция проверки обновлений
 function checkForUpdates()
     local tempPath = os.getenv("TEMP") .. "\\gh_version.txt"
+    local downloadStarted = false
+    local downloadFinished = false
+    
+    -- Таймаут 10 секунд
+    lua_thread.create(function()
+        wait(10000)
+        if not downloadFinished then
+            sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FF6600}Не удалось проверить обновления (таймаут)."), -1)
+            sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FFFFFF}Проверьте интернет-соединение и ссылку в настройках."), -1)
+        end
+    end)
     
     downloadUrlToFile(VERSION_URL, tempPath, function(id, status, p1, p2)
+        downloadStarted = true
+        
         if status == dlstatus.STATUS_ENDDOWNLOADDATA then
+            downloadFinished = true
             local file = io.open(tempPath, "r")
             if file then
                 latestVersion = file:read("*l")
                 file:close()
                 os.remove(tempPath)
                 
-                if latestVersion and latestVersion ~= SCRIPT_VERSION then
+                -- Убираем пробелы и переносы строк
+                if latestVersion then
+                    latestVersion = latestVersion:gsub("%s+", "")
+                end
+                
+                if latestVersion and latestVersion ~= "" and latestVersion ~= SCRIPT_VERSION then
                     updateAvailable = true
                     sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {00FF00}Доступна новая версия: " .. latestVersion), -1)
                     sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FFFFFF}Введите /gdownload для обновления"), -1)
@@ -1764,9 +1785,17 @@ function checkForUpdates()
                 else
                     sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {00FF00}У вас актуальная версия: " .. SCRIPT_VERSION), -1)
                 end
+            else
+                sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FF0000}Ошибка чтения файла версии."), -1)
             end
         elseif status == dlstatus.STATUS_DOWNLOADINGDATA then
             -- Скачивание в процессе
+        elseif status == dlstatus.STATUSEX_ENDDOWNLOAD then
+            -- Загрузка завершена (может быть с ошибкой)
+            if not downloadFinished then
+                downloadFinished = true
+                sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FF0000}Ошибка загрузки. Проверьте ссылку VERSION_URL."), -1)
+            end
         end
     end)
 end
@@ -1779,16 +1808,35 @@ function downloadUpdate()
     end
     
     sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FFFFFF}Скачивание обновления..."), -1)
+    local downloadFinished = false
+    
+    -- Таймаут 30 секунд для скачивания
+    lua_thread.create(function()
+        wait(30000)
+        if not downloadFinished then
+            sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FF0000}Ошибка скачивания (таймаут)."), -1)
+        end
+    end)
     
     downloadUrlToFile(UPDATE_URL, SCRIPT_PATH, function(id, status, p1, p2)
         if status == dlstatus.STATUS_ENDDOWNLOADDATA then
+            downloadFinished = true
             sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {00FF00}Обновление скачано! Перезагрузка скрипта..."), -1)
-            wait(1000)
-            thisScript():reload()
+            lua_thread.create(function()
+                wait(1000)
+                thisScript():reload()
+            end)
         elseif status == dlstatus.STATUS_DOWNLOADINGDATA then
             -- Показываем прогресс
-            local percent = math.floor(p1 / p2 * 100)
-            -- sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FFFFFF}Скачивание: " .. percent .. "%"), -1)
+            if p2 and p2 > 0 then
+                local percent = math.floor(p1 / p2 * 100)
+                -- sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FFFFFF}Скачивание: " .. percent .. "%"), -1)
+            end
+        elseif status == dlstatus.STATUSEX_ENDDOWNLOAD then
+            if not downloadFinished then
+                downloadFinished = true
+                sampAddChatMessage(toCP1251("{4A90D9}[Government Helper] {FF0000}Ошибка скачивания. Проверьте ссылку UPDATE_URL."), -1)
+            end
         end
     end)
 end
