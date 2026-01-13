@@ -41,7 +41,7 @@ local str = ffi.string
 local sizeof = ffi.sizeof
 
 -- Добавлены переменные для авто-обновления
-local SCRIPT_VERSION = "25.1"
+local SCRIPT_VERSION = "25.2"
 local UPDATE_URL = "https://raw.githubusercontent.com/your-repo/government-helper/main/government-helper.lua" -- Замени на свой URL
 local VERSION_URL = "https://raw.githubusercontent.com/your-repo/government-helper/main/version.txt" -- Замени на свой URL
 local SCRIPT_PATH = thisScript().path
