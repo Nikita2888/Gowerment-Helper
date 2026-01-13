@@ -11,7 +11,7 @@
 
 script_name("Government Helper")
 script_author("v0")
-script_version("25.1")
+script_version("25.2")
 
 -- Библиотеки
 local imgui = require 'mimgui'
