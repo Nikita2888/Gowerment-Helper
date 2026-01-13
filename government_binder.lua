@@ -11,7 +11,7 @@
 
 script_name("Government Helper")
 script_author("v0")
-script_version("25.2")
+script_version("25.3")
 
 -- Библиотеки
 local imgui = require 'mimgui'
@@ -41,9 +41,9 @@ local str = ffi.string
 local sizeof = ffi.sizeof
 
 -- Добавлены переменные для авто-обновления
-local SCRIPT_VERSION = "25.2"
-local UPDATE_URL = "https://raw.githubusercontent.com/your-repo/government-helper/main/government-helper.lua" -- Замени на свой URL
-local VERSION_URL = "https://raw.githubusercontent.com/your-repo/government-helper/main/version.txt" -- Замени на свой URL
+local SCRIPT_VERSION = "25.3"
+local UPDATE_URL = "https://raw.githubusercontent.com/Nikita2888/Gowerment-Helper/refs/heads/main/government_binder.lua" -- Замени на свой URL
+local VERSION_URL = "https://raw.githubusercontent.com/Nikita2888/Gowerment-Helper/refs/heads/main/version.txt" -- Замени на свой URL
 local SCRIPT_PATH = thisScript().path
 local updateAvailable = false
 local latestVersion = ""
