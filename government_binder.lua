@@ -10,7 +10,7 @@
 ]]
 
 script_name("Government Helper")
-script_author("v0")
+script_author("Chester Williams")
 script_version("25.1")
 
 -- Библиотеки
@@ -1663,7 +1663,7 @@ local mainFrame = imgui.OnFrame(
             imgui.SetCursorPos(imgui.ImVec2(15, 40))
             imgui.Text("Биндер для Правительства Arizona RP")
             imgui.SetCursorPos(imgui.ImVec2(15, 65))
-            imgui.TextColored(colors.textDark, "Автор: v0")
+            imgui.TextColored(colors.textDark, "Автор: Chester Williams")
             imgui.SetCursorPos(imgui.ImVec2(15, 90))
             imgui.Text("Возможности:")
             imgui.SetCursorPos(imgui.ImVec2(15, 110))
